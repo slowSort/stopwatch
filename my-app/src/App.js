@@ -1,22 +1,35 @@
 import React from 'react';
 import './App.css';
 
-const Stopwatches = [
- { id: 1, name: 'Workout', time: 67, isOn: false },
- { id: 2, name: 'Cleaning', time: 500, isOn: false },
- { id: 3, name: 'Cooking', time: 295, isOn: false },
-];
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-      <h1>Custom Stopwatch</h1>
-      {ReturnStopwatches()}
-      <NameForm></NameForm>
-      </header>
-    </div>
-  );
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      stopwatches: [
+       { id: 1, name: 'Workout', time: 67, isOn: false },
+       { id: 2, name: 'Cleaning', time: 500, isOn: false },
+       { id: 3, name: 'Cooking', time: 295, isOn: false },
+      ]
+    };
+    this.addStopwatch = this.addStopwatch.bind(this)
+  }
+  addStopwatch(newStopwatch) {
+    this.setState({
+      stopwatches: [...this.state.stopwatches, newStopwatch]
+    })
+  }
+  render() {
+    return (
+      <div className="App">
+        <header className="App-header">
+        <h1>Custom Stopwatch</h1>
+        {ReturnStopwatches(this.state.stopwatches)}
+        <NameForm stopwatches={this.state.stopwatches} addStopwatch={this.addStopwatch}></NameForm>
+        </header>
+      </div>
+    );
+  }
 }
 
 class NameForm extends React.Component {
@@ -39,7 +52,13 @@ class NameForm extends React.Component {
   }
 
   handleSubmit(event) {
-    alert('A name was submitted: ' + this.state.stopwatchName + ' And a time: ' + this.state.stopwatchTime);
+    const newStopwatch = {
+      id: this.props.stopwatches.length + 1,
+      name: this.state.stopwatchName,
+      time: parseInt(this.state.stopwatchTime),
+      isOn: false
+    }
+    this.props.addStopwatch(newStopwatch)
     event.preventDefault();
   }
 
@@ -60,9 +79,9 @@ class NameForm extends React.Component {
   }
 }
 
-function ReturnStopwatches() {
+function ReturnStopwatches(stopwatches) {
   return (
-      Stopwatches.map(({id, name, time}) =>
+      stopwatches.map(({id, name, time}) =>
         <li key={id}>{name} Time: {time}</li>
       )
   );
