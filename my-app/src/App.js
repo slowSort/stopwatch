@@ -13,18 +13,25 @@ class App extends React.Component {
       ]
     };
     this.addStopwatch = this.addStopwatch.bind(this)
+    this.handleDelete = this.handleDelete.bind(this)
   }
   addStopwatch(newStopwatch) {
     this.setState({
       stopwatches: [...this.state.stopwatches, newStopwatch]
     })
   }
+
+  handleDelete(id) {
+      const stopwatches = this.state.stopwatches.filter((stopwatch) => stopwatch.id !== id)
+      this.setState({stopwatches})
+  }
+
   render() {
     return (
       <div className="App">
         <header className="App-header">
         <h1>Custom Stopwatch</h1>
-        {ReturnStopwatches(this.state.stopwatches)}
+        {ReturnStopwatches(this.state.stopwatches, this.handleDelete)}
         <NameForm stopwatches={this.state.stopwatches} addStopwatch={this.addStopwatch}></NameForm>
         </header>
       </div>
@@ -79,10 +86,13 @@ class NameForm extends React.Component {
   }
 }
 
-function ReturnStopwatches(stopwatches) {
+function ReturnStopwatches(stopwatches, onSubmit) {
   return (
       stopwatches.map(({id, name, time}) =>
-        <li key={id}>{name} Time: {time}</li>
+        <li key={id}>{name} Time: {time} <button type="submit" onClick={() => {
+          onSubmit(id)
+
+        }}>Delete</button></li>
       )
   );
 }
